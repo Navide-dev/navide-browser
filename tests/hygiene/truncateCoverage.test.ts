@@ -18,11 +18,6 @@ const SKIP_DIRS: string[] = []
 const EXEMPT: Record<string, string> = {
   // The note's own title already shows its whole text.
   'src/BrowserApp.vue|note': 'the element carries a :title with its full text',
-  // Found when this scan first ran on Navide Browser (moving out of the Navide
-  // repository, 2026-11-20); they predate it and wait for a decision on the
-  // fix (register v-truncate in the Browser app). Remove each entry with it.
-  'src/BrowserApp.vue|name': 'pending: workspace name, no full-text hover yet',
-  'src/BrowserApp.vue|tab-label': 'pending: the tab title shows the URL, not the cut label',
 }
 
 /** Repo-relative path with `/` separators, whatever the platform's `path` gives. */

@@ -273,3 +273,10 @@ export type LayoutMode = 'tiled' | 'switch'
 export function parseLayoutMode(value: unknown): LayoutMode {
   return value === 'switch' ? 'switch' : 'tiled'
 }
+
+/** A tab's hover text: its full label and its address, so a label cut off
+ *  with an ellipsis never hides where the tab is. `note` adds a second line. */
+export function tabHoverText(label: string, url: string, note?: string): string {
+  const first = url && url !== label ? `${label} — ${url}` : label
+  return note ? `${first}\n${note}` : first
+}

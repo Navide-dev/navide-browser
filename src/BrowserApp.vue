@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { createPluginViewState } from '@navide/plugin-sdk'
+import { vTruncate } from '@navide/plugin-ui/foundation'
 import {
   defaults as navideKeybindings,
   gridPageCount,
@@ -24,6 +25,7 @@ import {
   showsAgentScriptWarning,
   spaceUploads,
   stateLabelKey,
+  tabHoverText,
   tileGrid,
   type BrowserSpace,
   type DiscardedTab,
@@ -494,7 +496,7 @@ onBeforeUnmount(() => {
     <ul class="left-list">
       <li v-for="space in spaces" :key="space.key" :class="{ agent: space.owner === 'agent' }" @click="run(openBrowserWindow)">
         <span v-if="space.owner === 'user'" class="pin" :title="t('browser.space.yours')">📌</span>
-        <span class="name">{{ space.name || (space.tabs[0] ? tabLabel(space.tabs[0]) : '') }}</span>
+        <span v-truncate class="name">{{ space.name || (space.tabs[0] ? tabLabel(space.tabs[0]) : '') }}</span>
         <span v-if="hasSensitiveUpload(space)" class="warn-mark" :title="t('browser.uploads.sensitive-note')">⚠</span>
         <span class="chip" :class="`state-${space.state}`">{{ t(stateLabelKey(space.state)) }}</span>
       </li>
@@ -543,7 +545,7 @@ onBeforeUnmount(() => {
           @click="focusSpace(space)"
         >
           <span v-if="space.owner === 'user'" class="pin" :title="t('browser.space.yours')">📌</span>
-          <span class="name">{{ space.name || (space.tabs[0] ? tabLabel(space.tabs[0]) : '') }}</span>
+          <span v-truncate class="name">{{ space.name || (space.tabs[0] ? tabLabel(space.tabs[0]) : '') }}</span>
           <span v-if="hasSensitiveUpload(space)" class="warn-mark" :title="t('browser.uploads.sensitive-note')">⚠</span>
           <span class="chip" :class="`state-${space.state}`">{{ t(stateLabelKey(space.state)) }}</span>
         </button>
@@ -563,7 +565,7 @@ onBeforeUnmount(() => {
         >
           <header class="tile-header">
             <span v-if="space.owner === 'user'" class="pin" :title="t('browser.space.yours')">📌</span>
-            <span class="name">{{ space.name || (space.tabs[0] ? tabLabel(space.tabs[0]) : '') }}</span>
+            <span v-truncate class="name">{{ space.name || (space.tabs[0] ? tabLabel(space.tabs[0]) : '') }}</span>
             <span class="chip owner">{{ space.owner === 'agent' ? t('browser.owner.agent') : t('browser.owner.user') }}</span>
             <template v-if="activeView(space)">
               <span class="control-text">
@@ -602,7 +604,7 @@ onBeforeUnmount(() => {
           <div class="tab-strip" role="tablist">
             <template v-for="tab in space.tabs" :key="tab.viewId">
               <div class="tab" :class="{ active: activeId(space) === tab.viewId, popup: !!tab.openerViewId }" role="tab" :aria-selected="activeId(space) === tab.viewId">
-                <button type="button" class="tab-label" :title="tab.url" @click="selectTab(space, tab.viewId)">
+                <button v-truncate="tabLabel(tab)" type="button" class="tab-label" :title="tabHoverText(tabLabel(tab), tab.url)" @click="selectTab(space, tab.viewId)">
                   <span v-if="tab.dialog" aria-hidden="true">💬</span>
                   <span class="chip" :class="`state-${tab.state}`" v-if="tab.state === 'need-action'">{{ t(stateLabelKey(tab.state)) }}</span>
                   {{ tabLabel(tab) }}
@@ -611,7 +613,7 @@ onBeforeUnmount(() => {
               </div>
             </template>
             <div v-for="tab in space.discarded" :key="tab.id" class="tab discarded" :class="{ active: activeId(space) === tab.id }" role="tab" :aria-selected="activeId(space) === tab.id">
-              <button type="button" class="tab-label" :title="t('browser.tab.discarded')" @click="selectTab(space, tab.id)">{{ tabLabel(tab) }}</button>
+              <button v-truncate="tabLabel(tab)" type="button" class="tab-label" :title="tabHoverText(tabLabel(tab), tab.url, t('browser.tab.discarded'))" @click="selectTab(space, tab.id)">{{ tabLabel(tab) }}</button>
               <button type="button" class="tab-close" :title="t('browser.tab.close')" :aria-label="t('browser.tab.close')" @click="closeTab(space, tab.id)">×</button>
             </div>
             <button v-if="space.owner === 'user'" type="button" class="icon tab-new" :title="t('browser.tab.new')" :aria-label="t('browser.tab.new')" @click="newTab(space)">＋</button>

@@ -1,4 +1,6 @@
 // @vitest-environment happy-dom
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import enUS from './locales/en-US.json'
 import jaJP from './locales/ja-JP.json'
@@ -19,6 +21,7 @@ import {
   showsAgentScriptWarning,
   sortSpaces,
   spaceUploads,
+  tabHoverText,
   tileGrid,
   type WebViewInfo,
 } from './spaces'
@@ -261,5 +264,40 @@ describe('manifest agent tools', () => {
       'browser_take_over', 'browser_cdp',
     ])
     expect(manifest.backend.methods).toEqual(manifest.backend.agentTools.map((tool) => tool.method))
+  })
+})
+
+describe('tabHoverText', () => {
+  it('shows the full label and the address together', () => {
+    expect(tabHoverText('A very long page title', 'https://example.com/a')).toBe('A very long page title — https://example.com/a')
+  })
+
+  it('does not repeat an address that is the label', () => {
+    expect(tabHoverText('https://example.com/a', 'https://example.com/a')).toBe('https://example.com/a')
+    expect(tabHoverText('Untitled', '')).toBe('Untitled')
+  })
+
+  it('keeps the address when it adds a note', () => {
+    expect(tabHoverText('Docs', 'https://example.com/docs', 'Closed to save memory'))
+      .toBe('Docs — https://example.com/docs\nClosed to save memory')
+  })
+})
+
+describe('BrowserApp hover text on cut-off names and tab labels', () => {
+  const source = readFileSync(join(__dirname, 'BrowserApp.vue'), 'utf8')
+
+  it('marks every workspace name for the full-text tooltip', () => {
+    const names = source.match(/<span[^>]*class="name"[^>]*>/g) ?? []
+    expect(names).toHaveLength(3)
+    for (const tag of names) expect(tag).toMatch(/\sv-truncate[\s>]/)
+  })
+
+  it('gives every tab label its full label and address', () => {
+    const labels = source.match(/<button[^>]*class="tab-label"[^>]*>/g) ?? []
+    expect(labels).toHaveLength(2)
+    for (const tag of labels) {
+      expect(tag).toContain('v-truncate="tabLabel(tab)"')
+      expect(tag).toMatch(/:title="tabHoverText\(tabLabel\(tab\), tab\.url/)
+    }
   })
 })
