@@ -1,0 +1,22 @@
+{
+  "_comment": "The values the Navide Host checks this plugin against: cdpAllowedMethods is the Host's CDP_ALLOWED_METHODS (src/main/plugins/pluginWebViews.ts), which the Host compares with the browser_cdp description of the pinned manifest (backend/tests/test_navide_browser_host_contract.py). A change must reach the Host with the next pin.",
+  "cdpAllowedMethods": [
+    "Accessibility.getFullAXTree",
+    "DOM.focus",
+    "DOM.getBoxModel",
+    "DOM.resolveNode",
+    "DOM.scrollIntoViewIfNeeded",
+    "DOM.setFileInputFiles",
+    "DOMSnapshot.captureSnapshot",
+    "Input.dispatchKeyEvent",
+    "Input.dispatchMouseEvent",
+    "Input.insertText",
+    "Page.captureScreenshot",
+    "Page.getNavigationHistory",
+    "Page.handleJavaScriptDialog",
+    "Page.navigate",
+    "Page.navigateToHistoryEntry",
+    "Runtime.callFunctionOn",
+    "Runtime.evaluate"
+  ]
+}
