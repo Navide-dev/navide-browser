@@ -8,7 +8,8 @@ import { describe, expect, it } from 'vitest'
 // reads must be defined by the plugin-ui tokens or by the plugin itself.
 
 const pluginSrc = resolve(__dirname)
-const tokenRoot = resolve(__dirname, '../../../packages/plugin-ui/src')
+// The installed @navide/plugin-ui build carries every theme's tokens.
+const tokenRoot = resolve(__dirname, '../node_modules/@navide/plugin-ui/dist')
 
 function files(dir: string, pattern: RegExp): string[] {
   return readdirSync(dir).flatMap((name) => {
