@@ -1,6 +1,8 @@
 # DRAFT — not active. Move it to .github/workflows/ to turn it on.
 #
-# Builds, tests and packs navide.browser for every target the App ships.
+# Builds, tests and packs navide.browser for every target the App ships: the
+# five Navide's release.yml builds and its publish script accepts (no Intel
+# macOS App, so no darwin-x64).
 # PyInstaller builds only for the host it runs on, so each target has its own
 # runner. The backend is packaged from this repository's own Python
 # environment (backend/pyproject.toml, backend/uv.lock, backend/.python-version);
@@ -32,7 +34,6 @@ jobs:
       matrix:
         include:
           - { target: darwin-arm64, runner: macos-15 }
-          - { target: darwin-x64, runner: macos-15-intel }
           - { target: linux-x64, runner: ubuntu-22.04 }
           - { target: linux-arm64, runner: ubuntu-24.04-arm }
           - { target: win32-x64, runner: windows-latest }
